@@ -16,7 +16,7 @@ class Randomize:
         self.input_file = input_file
         self.output_file = output_file
 
-    @propety
+    @property
     def input_data(self):
         """ check if the file exists """
         return self._input_data
@@ -36,7 +36,8 @@ class Randomize:
 
         with open(self.output_file, 'w') as csvfile:
             csv_writer = csv.writer(csvfile)
-
+            for i in random_list:
+                csv_writer.writerow([i])
 
     @staticmethod
     def _get_file_length(input_file):
