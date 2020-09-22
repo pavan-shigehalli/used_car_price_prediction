@@ -12,5 +12,5 @@ class Data:
     """
 
     parent_directory = os.getcwd()
-    data_directory = os.path.join(parent_directory, 'codes', 'data',
-                                  'used_car_data')
+    RANDOMIZE_LOG = os.path.join(parent_directory, 'codes', 'log',
+                                  'RANDOMIZE.log')

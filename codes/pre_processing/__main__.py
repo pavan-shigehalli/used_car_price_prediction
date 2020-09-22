@@ -15,9 +15,7 @@ def randomize_data(input_directory, output_directory):
     """
     for file in os.listdir(input_directory):
         input_file = os.path.join(input_directory, file)
-        output_file, _ = os.path.splitext(file)
-        output_file += '_rand.csv'
-        output_file = os.path.join(output_directory, output_file)
+        output_file = os.path.join(output_directory, file)
 
         Rand = Randomize(input_file, output_file)
         Rand.randomize()
