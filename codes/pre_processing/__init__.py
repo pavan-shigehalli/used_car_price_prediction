@@ -4,13 +4,18 @@ Contains configuration used by other scripts
 """
 
 import os
-
+import json
 
 class Data:
     """
-    Contains relavaent data file paths
+    Contains relavent data file paths
     """
 
-    parent_directory = os.getcwd()
-    RANDOMIZE_LOG = os.path.join(parent_directory, 'codes', 'log',
-                                  'RANDOMIZE.log')
+    with open(os.path.join('configuration', 'config.json'), 'r') as file:
+        data = json.load(file)
+
+    RANDOMIZE_LOG = os.sep.join([os.getcwd()]
+                                + (data['Logs']['Randomize'].split('/')))
+
+    FEATURE_ELLIMINATION_LOG = os.sep.join([os.getcwd()]
+                                           + data['Logs']['Feature Ellimination'].split('/'))

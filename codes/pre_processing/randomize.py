@@ -10,8 +10,8 @@ import logging
 
 from .__init__ import Data
 
-logging.basicConfig(filename=Data.RANDOMIZE_LOG, level=logging.DEBUG,
-                    format='%(asctime)s:%(levelname)s:%(message)s')
+#logging.basicConfig(filename=Data.RANDOMIZE_LOG, level=logging.DEBUG,
+#                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 class Randomize:
     """
@@ -50,10 +50,12 @@ class Randomize:
         # Check the output file integrity
         output_data_size = self._get_file_length(self.output_file)
         if input_data_size != output_data_size:
-            logging.warning(f"The {self.output_file} length:{output_data_size} "
-                            f"The {self.input_file} length:{input_data_size}\n")
+            #logging.warning(f"The {self.output_file} length:{output_data_size} "
+            #                f"The {self.input_file} length:{input_data_size}\n")
+            pass
         else:
-            logging.info(f"The file {self.output_file} is successfully written")
+            #logging.info(f"The file {self.output_file} is successfully written")
+            pass
 
     @staticmethod
     def _get_file_length(input_file):

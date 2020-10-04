@@ -28,6 +28,11 @@ if __name__ == '__main__':
                         metavar=('input_directory', 'output_directory'),
                         nargs=2, type=str, dest='data_directory' )
 
+    parser.add_argument('-e','--elliminate',
+                        action='store_true', dest='feat_ell')
+
     args = parser.parse_args()
     if args.data_directory:
         randomize_data(args.data_directory[0], args.data_directory[1])
+    elif args.feat_ell:
+        FE = FeatureEllimintation(data_file='data/processed_data/audi.csv')
