@@ -8,7 +8,7 @@ import random
 import linecache
 import logging
 
-from .__init__ import Data
+#from .__init__ import Data
 
 #logging.basicConfig(filename=Data.RANDOMIZE_LOG, level=logging.DEBUG,
 #                    format='%(asctime)s:%(levelname)s:%(message)s')

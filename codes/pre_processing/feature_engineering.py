@@ -7,9 +7,7 @@ import csv
 import sys
 import os
 import logging
-from logging.handlers import TimedRotatingFileHandler
-
-from .__init__ import Data
+from logging.handlers import RotatingFileHandler
 
 
 class FeatureEllimintation:
@@ -17,10 +15,9 @@ class FeatureEllimintation:
     Contains methods to delete the redundant features
     """
 
-    def __init__(self, data_file, batch_size=None, log=True):
-        self.logger = log
-        self.data_file = data_file
-        self.batch_size = batch_size
+    def __init__(self, batch_size=None, log_file=None):
+        self.logger = log_file
+        self.batch_size = batch_size, None
 
     @property
     def logger(self):
@@ -28,11 +25,8 @@ class FeatureEllimintation:
         return self._logger
 
     @logger.setter
-    def logger(self, log):
+    def logger(self, log_file):
         format = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
-
-        file_handler = TimedRotatingFileHandler(Data.FEATURE_ELLIMINATION_LOG, when='midnight')
-        file_handler.setFormatter(format)
 
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.DEBUG)
@@ -42,21 +36,10 @@ class FeatureEllimintation:
         self._logger.setLevel(logging.DEBUG)
         self._logger.addHandler(console_handler)
 
-        if log:
+        if log_file:
+            file_handler = RotatingFileHandler(log_file, maxBytes=1073741824)
+            file_handler.setFormatter(format)
             self._logger.addHandler(file_handler)
-
-    @property
-    def data_file(self):
-        """ check if the file exists """
-        return self._data_file
-
-    @data_file.setter
-    def data_file(self, file):
-        if os.path.isfile(file):
-            self._data_file = file
-        else:
-            self.logger.error(f"The file {file} does not exist")
-            raise OSError(f"The file {file} does not exist")
 
     @property
     def batch_size(self):
@@ -64,11 +47,15 @@ class FeatureEllimintation:
         return self._batch_size
 
     @batch_size.setter
-    def batch_size(self, size):
-        if size :
-            self._batch_size = size
+    def batch_size(self, args):
+        size, data_file = args
+        if data_file:
+            if size :
+                self._batch_size = size
+            else:
+                self._batch_size = self._get_file_length(data_file)
         else:
-            self._batch_size = self._get_file_length(self.data_file)
+            self._batch_size = None
 
         self.logger.info(f"Batch size set to : {self._batch_size}")
 
@@ -81,10 +68,16 @@ class FeatureEllimintation:
 
         return i + 1
 
-    def elliminate(self):
+    def elliminate(self, data_file):
         """
         Returns a list of removable columns from the data set
         """
+        if not os.path.isfile(data_file):
+            self.logger.error(f"The file {data_file} does not exist")
+            raise OSError(f"The file {data_file} does not exist")
+
+        self.batch_size = None, data_file
+
 
     def t_test(self):
         """
