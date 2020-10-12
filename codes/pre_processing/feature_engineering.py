@@ -78,6 +78,32 @@ class FeatureEllimintation:
 
         self.batch_size = None, data_file
 
+        with open(data_file, 'r') as file:
+            csvfile = csv.reader(file)
+
+            matrix = []
+            start_index = 1  # Discard the headers in the table
+            end_index = self.batch_size
+            counter = 0
+            for row in csvfile:
+                if counter >= start_index:
+                    matrix.append(row)
+
+                if counter == end_index:
+                    # Batch is full
+
+                    # Perform the data operations here
+                    # func(matrix)
+
+                    # Reset for the next batch
+                    matrix = []
+                    start_index == end_index + 1
+                    end_index = start_index + self.batch_size - 1
+                    counter = start_index
+                    continue
+
+                counter += 1
+
 
     def t_test(self):
         """
