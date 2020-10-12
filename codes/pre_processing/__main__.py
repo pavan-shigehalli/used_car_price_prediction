@@ -11,16 +11,23 @@ from .randomize import Randomize
 from .feature_engineering import FeatureEllimintation
 
 
-def randomize_data(input_directory, output_directory):
+def randomize_data():
     """
     Passes the parametes to randomize.py
     """
+    with open(os.path.join('configuration', 'config.json'), 'r') as file:
+        data = json.load(file)
+
+    input_directory = os.sep.join([os.getcwd()] + data['Data']['Raw']['Directory'].split('/'))
+    output_directory = os.sep.join([os.getcwd()] + data['Data']['Processed']['Directory'].split('/'))
+    log = os.sep.join([os.getcwd()] + data['Logs']['Randomize'].split('/'))
+
+    Rand = Randomize(log_file=log)
     for file in os.listdir(input_directory):
         input_file = os.path.join(input_directory, file)
         output_file = os.path.join(output_directory, file)
 
-        Rand = Randomize(input_file, output_file)
-        Rand.randomize()
+        Rand.randomize(input_file, output_file)
 
 def remove_features():
     """
@@ -41,15 +48,14 @@ def remove_features():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-R','--randomize',
-                        metavar=('input_directory', 'output_directory'),
-                        nargs=2, type=str, dest='data_directory' )
+                        action='store_true', dest='randomize' )
 
-    parser.add_argument('-e','--elliminate',
+    parser.add_argument('-E','--elliminate',
                         action='store_true', dest='feat_ell')
 
     args = parser.parse_args()
-    if args.data_directory:
-        randomize_data(args.data_directory[0], args.data_directory[1])
+    if args.randomize:
+        randomize_data()
     elif args.feat_ell:
         remove_features()
     else:

@@ -4,58 +4,66 @@ Contains mehthods to randomize the given data
 """
 
 import os
+import sys
 import random
 import linecache
 import logging
+from logging.handlers import RotatingFileHandler
 
-#from .__init__ import Data
-
-#logging.basicConfig(filename=Data.RANDOMIZE_LOG, level=logging.DEBUG,
-#                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 class Randomize:
     """
     Pre processes the data file
     """
 
-    def __init__(self, input_file, output_file):
-        self.input_file = input_file
-        self.output_file = output_file
+    def __init__(self, log_file=None):
+        self.logger = log_file
 
     @property
-    def input_data(self):
-        """ check if the file exists """
-        return self._input_data
+    def logger(self):
+        """ Sets logger """
+        return self._logger
 
-    @input_data.setter
-    def input_data(self,file):
-        if os.path.isfile(file):
-            return file
-        else:
-            raise OSError(f"The file {file} is not found")
+    @logger.setter
+    def logger(self,log_file):
+        format = logging.Formatter('%(asctime)s:%(levelname)s: %(message)s')
 
-    def randomize(self):
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(format)
+
+        self._logger = logging.getLogger()
+        self._logger.setLevel(logging.DEBUG)
+        self._logger.addHandler(console_handler)
+
+        if log_file:
+            file_handler = RotatingFileHandler(log_file, maxBytes=1073741824)
+            file_handler.setFormatter(format)
+            self._logger.addHandler(file_handler)
+
+    def randomize(self, input_file, output_file):
         """
         Randomly shuffles the input file rows and writes it to the
         specified directory
         """
-        input_data_size = self._get_file_length(self.input_file)
+        if not os.path.exists(input_file):
+            self.logger(f"The file {input_file} does not exist")
+
+        input_data_size = self._get_file_length(input_file)
         random_list = random.sample(range(2, input_data_size + 1), input_data_size - 1)
 
-        with open(self.output_file, 'w') as out_file:
-            out_file.write(linecache.getline(self.input_file, 1))
+        with open(output_file, 'w') as out_file:
+            out_file.write(linecache.getline(input_file, 1))
             for i in random_list:
-                out_file.write(linecache.getline(self.input_file, i))
+                out_file.write(linecache.getline(input_file, i))
 
         # Check the output file integrity
-        output_data_size = self._get_file_length(self.output_file)
+        output_data_size = self._get_file_length(output_file)
         if input_data_size != output_data_size:
-            #logging.warning(f"The {self.output_file} length:{output_data_size} "
-            #                f"The {self.input_file} length:{input_data_size}\n")
-            pass
+            self.logger.warning(f"The {output_file} length:{output_data_size} "
+                                f"The {input_file} length:{input_data_size}\n")
         else:
-            #logging.info(f"The file {self.output_file} is successfully written")
-            pass
+            self.logger.info(f"The file {output_file} is successfully written")
 
     @staticmethod
     def _get_file_length(input_file):

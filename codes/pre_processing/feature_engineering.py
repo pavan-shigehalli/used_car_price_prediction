@@ -26,7 +26,7 @@ class FeatureEllimintation:
 
     @logger.setter
     def logger(self, log_file):
-        format = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+        format = logging.Formatter('%(asctime)s:%(levelname)s: %(message)s')
 
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.DEBUG)
