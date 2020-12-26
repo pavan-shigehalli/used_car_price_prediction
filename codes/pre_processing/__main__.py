@@ -31,7 +31,7 @@ def randomize_data():
 
 def remove_features():
     """
-    Passes paramerts to feature_engineering.py
+    Passes parameters to feature_engineering.py
     """
     with open(os.path.join('configuration', 'config.json'), 'r') as file:
         data = json.load(file)

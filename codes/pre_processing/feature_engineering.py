@@ -78,10 +78,12 @@ class FeatureEllimintation:
 
         self.batch_size = None, data_file
 
+        file_length = self._get_file_length(data_file)
+
         with open(data_file, 'r') as file:
             csvfile = csv.reader(file)
 
-            matrix = []
+            matrix = [] # Store a single batch data
             start_index = 1  # Discard the headers in the table
             end_index = self.batch_size
             counter = 0
@@ -100,6 +102,8 @@ class FeatureEllimintation:
                     start_index == end_index + 1
                     end_index = start_index + self.batch_size - 1
                     counter = start_index
+                    if end_index > file_length : # What if the batch is not full ?
+                        end_index = file_length - 1
                     continue
 
                 counter += 1
